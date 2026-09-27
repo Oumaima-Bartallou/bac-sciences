@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Annonces - Bac Sciences</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <span>BAC</span> SCIENCES
+        </div>
+
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="../index.html">
+                    Accueil
+                </a>
+            </li>
+
+            <li>
+                <a href="matieres.html">
+                    Matières
+                </a>
+            </li>
+
+            <li>
+                <a href="examens.html">
+                    Examens
+                </a>
+            </li>
+
+            <li>
+                <a href="news.html" class="active">
+                    Annonces
+                </a>
+            </li>
+
+            <li>
+                <a href="contact.html">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+
+<main>
+
+
+    <section class="room-header">
+
+        <div class="room-icon">
+            📢
+        </div>
+
+        <p>
+            BAC SCIENCES
+        </p>
+
+        <h1>
+            Annonces
+        </h1>
+
+        <span>
+            Retrouvez les dernières actualités
+            et annonces de la plateforme.
+        </span>
+
+    </section>
+
+
+
+    <section class="resources">
+
+        <div
+            id="annonces"
+            style="
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            "
+        >
+
+            <p>
+                Chargement...
+            </p>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<footer>
+
+    <div class="footer-content">
+
+        <div class="footer-logo">
+            <span>BAC</span> SCIENCES
+        </div>
+
+        <p>
+            Ta plateforme pour réussir ton BAC.
+        </p>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        © 2026 Bac Sciences — Tous droits réservés.
+
+    </div>
+
+</footer>
+
+
+
+<script>
+
+async function chargerAnnonces() {
+
+    try {
+
+        const response =
+            await fetch("/annonces");
+
+
+        const annonces =
+            await response.json();
+
+
+        const container =
+            document.getElementById(
+                "annonces"
+            );
+
+
+        container.innerHTML = "";
+
+
+        if (annonces.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="resource-box">
+
+                    <div class="big-resource-icon">
+                        📢
+                    </div>
+
+                    <h2>
+                        Aucune annonce
+                    </h2>
+
+                    <p>
+                        Il n'y a aucune annonce
+                        pour le moment.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        annonces.forEach(annonce => {
+
+            const element =
+                document.createElement("div");
+
+
+            const date =
+                new Date(
+                    annonce.date
+                ).toLocaleDateString(
+                    "fr-FR"
+                );
+
+
+            element.className =
+                "resource-box";
+
+
+            element.innerHTML = `
+
+                <div class="big-resource-icon">
+                    📢
+                </div>
+
+                <h2>
+                    ${annonce.titre}
+                </h2>
+
+                <p>
+                    ${annonce.contenu}
+                </p>
+
+                <small>
+                    📅 ${date}
+                </small>
+
+            `;
+
+
+            container.appendChild(
+                element
+            );
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        document.getElementById(
+            "annonces"
+        ).innerHTML = `
+
+            <div class="resource-box">
+
+                <h2>
+                    ❌ Erreur
+                </h2>
+
+                <p>
+                    Impossible de charger
+                    les annonces.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+chargerAnnonces();
+
+</script>
+
+
+
+<script src="../js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anglais - Bac Sciences</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <header>
+
+        <nav class="navbar">
+
+            <div class="logo">
+                <span>BAC</span> SCIENCES
+            </div>
+
+            <ul class="nav-links">
+
+                <li>
+                    <a href="../index.html">
+                        Accueil
+                    </a>
+                </li>
+
+                <li>
+                    <a href="matieres.html" class="active">
+                        Matières
+                    </a>
+                </li>
+
+                <li>
+                    <a href="examens.html">
+                        Examens
+                    </a>
+                </li>
+
+                <li>
+                    <a href="about.html">
+                        À propos
+                    </a>
+                </li>
+
+                <li>
+                    <a href="contact.html">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </header>
+
+
+    <main>
+
+        <section class="room-header">
+
+            <div class="room-icon">
+                🇬🇧
+            </div>
+
+            <p>
+                MATIÈRE
+            </p>
+
+            <h1>
+                Anglais
+            </h1>
+
+            <span>
+                Retrouvez tous les cours, exercices,
+                sujets et corrections d'anglais.
+            </span>
+
+        </section>
+
+
+        <section class="resources">
+
+
+            <div class="resource-box">
+
+                <div class="big-resource-icon">
+                    📚
+                </div>
+
+                <h2>
+                    Cours
+                </h2>
+
+                <p>
+                    Consulte tous les cours d'anglais
+                    du programme du BAC.
+                </p>
+
+                <div id="cours">
+                    Chargement...
+                </div>
+
+            </div>
+
+
+            <div class="resource-box">
+
+                <div class="big-resource-icon">
+                    📝
+                </div>
+
+                <h2>
+                    Exercices
+                </h2>
+
+                <p>
+                    Entraîne-toi avec des exercices
+                    adaptés au programme du BAC.
+                </p>
+
+                <div id="exercices">
+                    Chargement...
+                </div>
+
+            </div>
+
+
+            <div class="resource-box">
+
+                <div class="big-resource-icon">
+                    📋
+                </div>
+
+                <h2>
+                    Sujets
+                </h2>
+
+                <p>
+                    Retrouve les anciens sujets
+                    du BAC.
+                </p>
+
+                <div id="sujets">
+                    Chargement...
+                </div>
+
+            </div>
+
+
+            <div class="resource-box">
+
+                <div class="big-resource-icon">
+                    ✅
+                </div>
+
+                <h2>
+                    Corrections
+                </h2>
+
+                <p>
+                    Consulte les corrections
+                    des exercices et des sujets.
+                </p>
+
+                <div id="corrections">
+                    Chargement...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-logo">
+                <span>BAC</span> SCIENCES
+            </div>
+
+            <p>
+                Ta plateforme pour réussir ton BAC.
+            </p>
+
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 Bac Sciences — Tous droits réservés.
+        </div>
+
+    </footer>
+
+
+    <script>
+
+        async function chargerDocuments() {
+
+            try {
+
+                const response = await fetch("/documents");
+
+                const documents = await response.json();
+
+
+                const anglaisDocuments = documents.filter(
+                    doc => doc.matiere === "anglais"
+                );
+
+
+                const cours =
+                    document.getElementById("cours");
+
+                const exercices =
+                    document.getElementById("exercices");
+
+                const sujets =
+                    document.getElementById("sujets");
+
+                const corrections =
+                    document.getElementById("corrections");
+
+
+                cours.innerHTML = "";
+                exercices.innerHTML = "";
+                sujets.innerHTML = "";
+                corrections.innerHTML = "";
+
+
+                anglaisDocuments.forEach(doc => {
+
+                    const element =
+                        document.createElement("div");
+
+
+                    element.innerHTML = `
+                        <p>
+                            📄 ${doc.titre}
+                        </p>
+
+                        <a
+                            href="/backend/uploads/${doc.fichier}"
+                            target="_blank"
+                        >
+                            Ouvrir le PDF →
+                        </a>
+                    `;
+
+
+                    if (doc.type === "cours") {
+
+                        cours.appendChild(element);
+
+                    }
+
+                    else if (doc.type === "exercices") {
+
+                        exercices.appendChild(element);
+
+                    }
+
+                    else if (doc.type === "sujets") {
+
+                        sujets.appendChild(element);
+
+                    }
+
+                    else if (doc.type === "corrections") {
+
+                        corrections.appendChild(element);
+
+                    }
+
+                });
+
+
+                if (cours.innerHTML === "") {
+
+                    cours.innerHTML =
+                        "Aucun cours disponible.";
+
+                }
+
+
+                if (exercices.innerHTML === "") {
+
+                    exercices.innerHTML =
+                        "Aucun exercice disponible.";
+
+                }
+
+
+                if (sujets.innerHTML === "") {
+
+                    sujets.innerHTML =
+                        "Aucun sujet disponible.";
+
+                }
+
+
+                if (corrections.innerHTML === "") {
+
+                    corrections.innerHTML =
+                        "Aucune correction disponible.";
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                document.getElementById("cours").innerHTML =
+                    "❌ Erreur de chargement.";
+
+            }
+
+        }
+
+
+        chargerDocuments();
+
+    </script>
+
+
+    <script src="../js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Contact - BAC Sciences</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="page-header">
+
+        <p>CONTACT</p>
+
+        <h1>Contactez-nous</h1>
+
+        <span>
+            Une question ? Une suggestion ?
+            Envoyez-nous un message.
+        </span>
+
+    </header>
+
+
+    <!-- FORMULAIRE -->
+
+    <main class="admin-section">
+
+        <form id="contactForm">
+
+            <div class="form-group">
+
+                <label for="nom">
+                    Nom complet
+                </label>
+
+                <input
+                    type="text"
+                    id="nom"
+                    placeholder="Votre nom"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="exemple@gmail.com"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="sujet">
+                    Sujet
+                </label>
+
+                <input
+                    type="text"
+                    id="sujet"
+                    placeholder="Sujet de votre message"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="message">
+                    Message
+                </label>
+
+                <textarea
+                    id="message"
+                    rows="7"
+                    placeholder="Écrivez votre message..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                📩 Envoyer le message
+            </button>
+
+        </form>
+
+
+        <div id="resultat"></div>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        const form =
+            document.getElementById("contactForm");
+
+        const resultat =
+            document.getElementById("resultat");
+
+
+        form.addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const nom =
+                    document.getElementById("nom")
+                    .value
+                    .trim();
+
+                const email =
+                    document.getElementById("email")
+                    .value
+                    .trim();
+
+                const sujet =
+                    document.getElementById("sujet")
+                    .value
+                    .trim();
+
+                const message =
+                    document.getElementById("message")
+                    .value
+                    .trim();
+
+
+                resultat.innerHTML = `
+                    <p>
+                        ⏳ Envoi du message...
+                    </p>
+                `;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://localhost:3000/messages",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    nom: nom,
+                                    email: email,
+                                    sujet: sujet,
+                                    message: message
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (response.ok) {
+
+                        resultat.innerHTML = `
+                            <div style="
+                                margin-top:20px;
+                                padding:15px;
+                                border-radius:8px;
+                                background:#e8f8ee;
+                            ">
+
+                                <strong>
+                                    ✅ Message envoyé !
+                                </strong>
+
+                                <p>
+                                    Merci pour votre message.
+                                </p>
+
+                            </div>
+                        `;
+
+
+                        form.reset();
+
+
+                    } else {
+
+                        resultat.innerHTML = `
+                            <p style="color:red;">
+                                ❌ ${data.message}
+                            </p>
+                        `;
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    resultat.innerHTML = `
+                        <p style="color:red;">
+                            ❌ Impossible de contacter le serveur.
+                        </p>
+                    `;
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin - BAC Sciences</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <header class="page-header">
+
+        <p>ADMINISTRATION</p>
+
+        <h1>Ajouter du contenu</h1>
+
+        <span>
+            Gestion des cours, exercices, examens et annonces
+        </span>
+
+    </header>
+
+
+
+    <!-- ========================= -->
+    <!-- AJOUTER UN PDF -->
+    <!-- ========================= -->
+
+    <main class="admin-section">
+
+        <h2>📄 Ajouter un document PDF</h2>
+
+
+        <form
+            id="uploadForm"
+            enctype="multipart/form-data"
+        >
+
+            <div class="form-group">
+
+                <label for="title">
+                    Titre
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Ex: Bac Mathématiques 2025"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="subject">
+                    Matière
+                </label>
+
+                <select
+                    id="subject"
+                    name="subject"
+                    required
+                >
+
+                    <option value="">
+                        Choisir une matière
+                    </option>
+
+                    <option value="mathematiques">
+                        Mathématiques
+                    </option>
+
+                    <option value="physique">
+                        Physique-Chimie
+                    </option>
+
+                    <option value="svt">
+                        SVT
+                    </option>
+
+                    <option value="francais">
+                        Français
+                    </option>
+
+                    <option value="anglais">
+                        Anglais
+                    </option>
+
+                    <option value="philosophie">
+                        Philosophie
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="type">
+                    Type de contenu
+                </label>
+
+                <select
+                    id="type"
+                    name="type"
+                    required
+                >
+
+                    <option value="">
+                        Choisir le type
+                    </option>
+
+                    <option value="cours">
+                        Cours
+                    </option>
+
+                    <option value="exercices">
+                        Exercices
+                    </option>
+
+                    <option value="sujets">
+                        Sujet / Examen
+                    </option>
+
+                    <option value="corrections">
+                        Correction
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                class="form-group"
+                id="anneeGroup"
+                style="display: none;"
+            >
+
+                <label for="annee">
+                    Année de l'examen
+                </label>
+
+                <input
+                    type="number"
+                    id="annee"
+                    name="annee"
+                    placeholder="Ex: 2025"
+                    min="2000"
+                    max="2100"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="pdf">
+                    Fichier PDF
+                </label>
+
+                <input
+                    type="file"
+                    id="pdf"
+                    name="pdf"
+                    accept=".pdf"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                📄 Ajouter le document
+            </button>
+
+        </form>
+
+
+        <div id="message"></div>
+
+    </main>
+
+
+
+    <!-- ========================= -->
+    <!-- AJOUTER UNE ANNONCE -->
+    <!-- ========================= -->
+
+    <main class="admin-section">
+
+        <h2>📢 Ajouter une annonce</h2>
+
+
+        <form id="annonceForm">
+
+            <div class="form-group">
+
+                <label for="annonceTitre">
+                    Titre de l'annonce
+                </label>
+
+                <input
+                    type="text"
+                    id="annonceTitre"
+                    placeholder="Ex: Concours ENSIAS 2026"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="annonceContenu">
+                    Contenu de l'annonce
+                </label>
+
+                <textarea
+                    id="annonceContenu"
+                    placeholder="Écrivez votre annonce ici..."
+                    rows="6"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                📢 Publier l'annonce
+            </button>
+
+        </form>
+
+
+        <div id="annonceMessage"></div>
+
+    </main>
+
+
+
+    <!-- ========================= -->
+    <!-- MESSAGES RECUS -->
+    <!-- ========================= -->
+
+    <main class="admin-section">
+
+        <h2>📩 Messages reçus</h2>
+
+        <button
+            type="button"
+            class="btn"
+            id="actualiserMessages"
+        >
+            🔄 Actualiser les messages
+        </button>
+
+        <div id="messagesContainer">
+
+            <p>
+                ⏳ Chargement des messages...
+            </p>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ========================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================= -->
+
+    <script>
+
+
+        /* ================================= */
+        /* ELEMENTS PDF */
+        /* ================================= */
+
+        const uploadForm =
+            document.getElementById("uploadForm");
+
+        const message =
+            document.getElementById("message");
+
+        const type =
+            document.getElementById("type");
+
+        const anneeGroup =
+            document.getElementById("anneeGroup");
+
+        const annee =
+            document.getElementById("annee");
+
+
+
+        /* ================================= */
+        /* AFFICHER / CACHER ANNEE */
+        /* ================================= */
+
+        type.addEventListener(
+            "change",
+            function () {
+
+                if (type.value === "sujets") {
+
+                    anneeGroup.style.display =
+                        "block";
+
+                    annee.required = true;
+
+                } else {
+
+                    anneeGroup.style.display =
+                        "none";
+
+                    annee.required = false;
+
+                    annee.value = "";
+
+                }
+
+            }
+        );
+
+
+
+        /* ================================= */
+        /* UPLOAD PDF */
+        /* ================================= */
+
+        uploadForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const formData =
+                    new FormData(uploadForm);
+
+
+                message.innerHTML = `
+                    <p>
+                        ⏳ Upload en cours...
+                    </p>
+                `;
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://localhost:3000/upload",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+
+                    const result =
+                        await response.text();
+
+
+                    if (response.ok) {
+
+                        message.innerHTML = `
+                            <div style="
+                                margin-top: 15px;
+                                padding: 15px;
+                                border-radius: 8px;
+                                background: #e8f8ee;
+                            ">
+
+                                <strong>
+                                    ✅ Document ajouté avec succès !
+                                </strong>
+
+                                <p>
+                                    ${result}
+                                </p>
+
+                            </div>
+                        `;
+
+
+                        uploadForm.reset();
+
+                        anneeGroup.style.display =
+                            "none";
+
+                    } else {
+
+                        message.innerHTML = `
+                            <p style="color: red;">
+                                ❌ ${result}
+                            </p>
+                        `;
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Erreur upload :",
+                        error
+                    );
+
+
+                    message.innerHTML = `
+                        <p style="color: red;">
+                            ❌ Impossible de contacter le serveur.
+                        </p>
+                    `;
+
+                }
+
+            }
+        );
+
+
+
+        /* ================================= */
+        /* ELEMENTS ANNONCE */
+        /* ================================= */
+
+        const annonceForm =
+            document.getElementById("annonceForm");
+
+        const annonceMessage =
+            document.getElementById(
+                "annonceMessage"
+            );
+
+
+
+        /* ================================= */
+        /* AJOUTER ANNONCE */
+        /* ================================= */
+
+        annonceForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const titre =
+                    document.getElementById(
+                        "annonceTitre"
+                    ).value.trim();
+
+
+                const contenu =
+                    document.getElementById(
+                        "annonceContenu"
+                    ).value.trim();
+
+
+
+                annonceMessage.innerHTML = `
+                    <p>
+                        ⏳ Publication en cours...
+                    </p>
+                `;
+
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "http://localhost:3000/annonces",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    titre: titre,
+
+                                    contenu: contenu
+
+                                })
+
+                            }
+                        );
+
+
+
+                    const result =
+                        await response.json();
+
+
+
+                    if (response.ok) {
+
+                        annonceMessage.innerHTML = `
+                            <div style="
+                                margin-top: 15px;
+                                padding: 15px;
+                                border-radius: 8px;
+                                background: #e8f8ee;
+                            ">
+
+                                <strong>
+                                    ✅ Annonce publiée avec succès !
+                                </strong>
+
+                            </div>
+                        `;
+
+
+                        annonceForm.reset();
+
+
+                    } else {
+
+                        annonceMessage.innerHTML = `
+                            <p style="color: red;">
+                                ❌ ${result.message}
+                            </p>
+                        `;
+
+                    }
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Erreur annonce :",
+                        error
+                    );
+
+
+                    annonceMessage.innerHTML = `
+                        <p style="color: red;">
+                            ❌ Impossible de contacter le serveur.
+                        </p>
+                    `;
+
+                }
+
+            }
+        );
+
+
+
+        /* ================================= */
+        /* MESSAGES */
+        /* ================================= */
+
+        const messagesContainer =
+            document.getElementById(
+                "messagesContainer"
+            );
+
+        const actualiserMessages =
+            document.getElementById(
+                "actualiserMessages"
+            );
+
+
+
+        /* ================================= */
+        /* CHARGER LES MESSAGES */
+        /* ================================= */
+
+        async function chargerMessages() {
+
+            messagesContainer.innerHTML = `
+                <p>
+                    ⏳ Chargement...
+                </p>
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:3000/messages"
+                    );
+
+
+                const messages =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        messages.message ||
+                        "Erreur"
+                    );
+
+                }
+
+
+                if (messages.length === 0) {
+
+                    messagesContainer.innerHTML = `
+                        <p>
+                            📭 Aucun message reçu.
+                        </p>
+                    `;
+
+                    return;
+
+                }
+
+
+                messagesContainer.innerHTML =
+                    messages.map(
+                        function (msg) {
+
+                            const date =
+                                msg.date
+                                    ? new Date(
+                                        msg.date
+                                    ).toLocaleString(
+                                        "fr-FR"
+                                    )
+                                    : "Date inconnue";
+
+
+                            return `
+
+                                <div style="
+                                    margin-top: 20px;
+                                    padding: 20px;
+                                    border-radius: 10px;
+                                    background: #f5f5f5;
+                                    border: 1px solid #ddd;
+                                ">
+
+                                    <h3>
+                                        👤 ${msg.nom}
+                                    </h3>
+
+                                    <p>
+                                        📧
+                                        <strong>Email :</strong>
+                                        ${msg.email}
+                                    </p>
+
+                                    <p>
+                                        📝
+                                        <strong>Sujet :</strong>
+                                        ${msg.sujet}
+                                    </p>
+
+                                    <p>
+                                        💬
+                                        <strong>Message :</strong>
+                                    </p>
+
+                                    <p>
+                                        ${msg.message}
+                                    </p>
+
+                                    <p>
+                                        📅
+                                        <strong>Date :</strong>
+                                        ${date}
+                                    </p>
+
+                                </div>
+
+                            `;
+
+                        }
+                    ).join("");
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erreur messages :",
+                    error
+                );
+
+
+                messagesContainer.innerHTML = `
+                    <p style="color: red;">
+                        ❌ Impossible de récupérer les messages.
+                    </p>
+                `;
+
+            }
+
+        }
+
+
+
+        /* ================================= */
+        /* BOUTON ACTUALISER */
+        /* ================================= */
+
+        actualiserMessages.addEventListener(
+            "click",
+            chargerMessages
+        );
+
+
+
+        /* ================================= */
+        /* CHARGER AU DEMARRAGE */
+        /* ================================= */
+
+        chargerMessages();
+
+
+    </script>
+
+
+</body>
+
+</html>
+
+
+
